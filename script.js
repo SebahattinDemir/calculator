@@ -14,32 +14,58 @@ function updateDisplay() {
 
 keys.addEventListener("click", function (event) {
     const element = event.target;
+    const value = element.value;
     if (!element.matches("button")) return;
 
-    if (element.classList.contains("operator")) {
-        handleOperator(element.value);
-        return;}
-    if (element.classList.contains("decimal")) {
-        inputDecimal();
-        updateDisplay();
-        return;}
-    if (element.classList.contains("clear")) {
-        clear(); 
-        updateDisplay(); 
-        return;}
-
-    inputNumber(element.value);
+    switch (value) {
+        case '+':
+        case '-':
+        case '*':
+        case '/':
+        case '=':
+            handleOperator(value);
+            break;
+        case '.':
+            inputDecimal();
+            break;
+        case 'clear':
+            clear();
+            break;
+        default:
+            inputNumber(element.value);            
+    }
     updateDisplay();
-
 });
 
 function handleOperator(nextOperator) {
     const value = parseFloat(displayValue);
+
+    if (operator && waitingForSecondValue) {
+        operator = nextOperator;
+        return;
+    }
+
     if(firstValue === null){
         firstValue = value;
+    } else if(operator){
+        const result = calculate(firstValue, value, operator);
+        displayValue = `${parseFloat(result.toFixed(7))}`;
+        firstValue = result;
     }
     waitingForSecondValue = true;
     operator = nextOperator;
+}
+
+function calculate(firstValue, secondValue, operator) {
+    if (operator === "+") {
+        return firstValue + secondValue;
+    } else if (operator === "-") {
+        return firstValue - secondValue;
+    } else if (operator === "*") {
+        return firstValue * secondValue;
+    } else if (operator === "/") {
+        return firstValue / secondValue;
+    }
 }
 
 function inputNumber(number) {
@@ -59,5 +85,8 @@ function inputDecimal() {
 
 function clear() {
     displayValue = "0";
+    firstValue = null;
+    operator = null;
+    waitingForSecondValue = false;
 }
 
