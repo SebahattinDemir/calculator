@@ -89,4 +89,3 @@ function clear() {
     operator = null;
     waitingForSecondValue = false;
 }
-
