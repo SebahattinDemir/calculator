@@ -12,8 +12,8 @@ function updateDisplay() {
     display.value = displayValue;
 }
 
-keys.addEventListener("click", function (event) {
-    const element = event.target;
+keys.addEventListener("click", function (e) {
+    const element = e.target;
     const value = element.value;
     if (!element.matches("button")) return;
 
